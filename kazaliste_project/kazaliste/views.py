@@ -4,6 +4,8 @@ from django.contrib.auth import login
 from .forms import RegisterForm
 from .models import Account
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -36,3 +38,29 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'kazaliste/register.html', {'form': form})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Dobrodošli natrag!")
+            return redirect('index') 
+        else:
+            messages.error(request, "Neispravni podaci (email ili lozinka).")
+
+    return render(request, 'kazaliste/login.html')
+
+def user_logout(request):
+    logout(request)
+    messages.info(request, "Uspješno ste se odjavili.")
+    return redirect('index')
+
+
+@login_required(login_url='login')
+def my_account(request):
+    return render(request, 'kazaliste/my_account.html')

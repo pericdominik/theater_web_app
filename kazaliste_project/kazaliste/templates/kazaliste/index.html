@@ -6,9 +6,13 @@
     <body>
         <h1>Dobrodošli u putujuću lutkarsku kazališnu družinu</h1>
         <nav>
-            <a href="#">Stranica 1</a>
-            <a href="#">Stranica 2</a>
-            <a href="#">Stranica 3</a>
+            {% if request.user.is_authenticated %}
+                Pozdrav, {{ request.user.first_name|default:request.user.username }} |
+                <a href="{% url 'logout' %}">Odjava</a>
+            {% else %}
+                <a href="{% url 'login' %}">Prijava</a> |
+                <a href="{% url 'register' %}">Registracija</a>
+            {% endif %}
         </nav>
     </body>
 </html>

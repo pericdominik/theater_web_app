@@ -1,0 +1,22 @@
+<h2>Prijava</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  <p>
+    <label for="id_email">E-mail</label><br>
+    <input type="email" id="id_email" name="email" required>
+  </p>
+  <p>
+    <label for="id_password">Lozinka</label><br>
+    <input type="password" id="id_password" name="password" required>
+  </p>
+  <button type="submit">Prijavi se</button>
+</form>
+
+{% if messages %}
+  <ul style="color:crimson;">
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}
+
+<p>Nemaš račun? <a href="{% url 'register' %}">Registriraj se</a></p>

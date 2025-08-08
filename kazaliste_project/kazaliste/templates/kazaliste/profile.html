@@ -1,0 +1,36 @@
+<h2>Moj profil</h2>
+
+{% if not edit %}
+  <div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:16px;">
+    <h3>Osobni podaci</h3>
+    <p><strong>Ime:</strong> {{ user_obj.first_name|default:"—" }}</p>
+    <p><strong>Prezime:</strong> {{ user_obj.last_name|default:"—" }}</p>
+    <p><strong>E‑mail:</strong> {{ user_obj.email|default:"—" }}</p>
+  </div>
+
+  <div style="border:1px solid #ddd; padding:12px; border-radius:8px;">
+    <h3>Kontakt</h3>
+    <p><strong>Telefon:</strong> {{ account.phone|default:"—" }}</p>
+    <p><strong>Država:</strong> {{ account.country|default:"—" }}</p>
+  </div>
+
+  <p style="margin-top:12px;">
+    <a href="{% url 'profile' %}?edit=1">Uredi</a> ·
+    <a href="{% url 'index' %}">Natrag na početnu</a>
+  </p>
+{% endif %}
+
+{% if edit %}
+  <form method="POST" action="{% url 'profile' %}?edit=1" style="border:1px solid #ddd; padding:12px; border-radius:8px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Spremi promjene</button>
+    <a href="{% url 'profile' %}" style="margin-left:8px;">Odustani</a>
+</form>
+{% endif %}
+
+{% if messages %}
+  <ul style="color: green; margin-top:12px;">
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}

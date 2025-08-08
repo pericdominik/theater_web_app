@@ -6,6 +6,7 @@ from .models import Account
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
 
 # Create your views here.
 
@@ -64,3 +65,20 @@ def user_logout(request):
 @login_required(login_url='login')
 def my_account(request):
     return render(request, 'kazaliste/my_account.html')
+
+
+@login_required(login_url='login')
+def edit_profile(request):
+    account, _ = Account.objects.get_or_create(user=request.user)
+    edit = (request.GET.get('edit') == '1')
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=account)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Podaci su uspješno ažurirani.")
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=account)
+
+    return render(request, 'kazaliste/profile.html', {'form': form, 'user_obj': request.user, 'account': account, 'edit': edit})

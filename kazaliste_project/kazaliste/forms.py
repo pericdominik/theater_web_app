@@ -1,4 +1,5 @@
 from django import forms
+from .models import Account
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -23,3 +24,14 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("Lozinke se ne podudaraju.")
 
         return cleaned_data
+    
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['phone', 'country']
+        labels = {
+            'phone': 'Telefon',
+            'country': 'Država'
+        }    
+           

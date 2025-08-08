@@ -8,6 +8,7 @@
         <nav>
             {% if request.user.is_authenticated %}
                 Pozdrav, {{ request.user.first_name|default:request.user.username }} |
+                <a href="{% url 'profile' %}">Moj profil</a> |
                 <a href="{% url 'logout' %}">Odjava</a>
             {% else %}
                 <a href="{% url 'login' %}">Prijava</a> |

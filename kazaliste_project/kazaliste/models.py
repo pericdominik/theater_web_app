@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
@@ -27,3 +28,19 @@ class Predstava(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Calendar(models.Model):
+    predstava = models.ForeignKey('Predstava', on_delete=models.CASCADE, related_name='raspored')
+    date = models.DateField()
+    time = models.TimeField()
+    dvorana = models.CharField(max_length=50)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['date', 'time', 'predstava__title']
+
+    def __str__(self):
+        return f"{self.predstava.title} - {self.date} {self.time}"    
+

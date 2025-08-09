@@ -1,0 +1,14 @@
+<h2>{{ predstava.title }}</h2>
+
+{% if predstava.image %}
+  <img src="{{ predstava.image.url }}" alt="{{ predstava.title }}" style="max-width:240px;">
+{% endif %}
+
+<p><strong>Trajanje:</strong> {{ predstava.duration_minutes }} min</p>
+<p><strong>Preporučena dob:</strong> {{ predstava.age_min }}+</p>
+
+{% if predstava.description %}
+  <p>{{ predstava.description|linebreaks }}</p>
+{% endif %}
+
+<p><a href="{% url 'predstave_list' %}">← Natrag na sve predstave</a></p>

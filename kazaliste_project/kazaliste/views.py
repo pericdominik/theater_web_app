@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .forms import RegisterForm
-from .models import Account
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm
+
+from .models import Account
+from .models import Predstava
 
 # Create your views here.
 
@@ -82,3 +84,12 @@ def edit_profile(request):
         form = ProfileForm(instance=account)
 
     return render(request, 'kazaliste/profile.html', {'form': form, 'user_obj': request.user, 'account': account, 'edit': edit})
+
+
+def predstave_list(request):
+    predstave = Predstava.objects.filter(is_active=True).order_by('title')
+    return render(request, 'kazaliste/predstave_list.html', {'predstave': predstave})
+
+def predstava_detail(request, pk):
+    predstava = get_object_or_404(Predstava, pk=pk, is_active=True)
+    return render(request, 'kazaliste/predstava_detail.html', {'predstava': predstava})

@@ -1,0 +1,14 @@
+<h2>Predstave</h2>
+
+<ul>
+  {% for p in predstave %}
+    <li>
+      <a href="{% url 'predstava_detail' p.pk %}">{{ p.title }}</a>
+      — {{ p.duration_minutes }} min, {{ p.age_min }}+
+    </li>
+  {% empty %}
+    <li>Trenutno nema aktivnih predstava.</li>
+  {% endfor %}
+</ul>
+
+<p><a href="{% url 'index' %}">Natrag na početnu</a></p>

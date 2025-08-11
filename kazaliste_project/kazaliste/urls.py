@@ -10,4 +10,6 @@ urlpatterns = [
     path('predstave/', views.predstave_list, name='predstave_list'),
     path('predstave/<int:pk>/', views.predstava_detail, name='predstava_detail'),
     path('calendar/', views.calendar_week, name='calendar_week'),
+    path('predstave/<int:pk>/like/add/', views.like_add, name='predstava_like_add'),
+    path('predstave/<int:pk>/like/remove/', views.like_remove, name='predstava_like_remove'),
 ]

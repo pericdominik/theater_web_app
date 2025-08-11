@@ -8,12 +8,9 @@ from .forms import ProfileForm
 from datetime import timedelta, date as date_cls
 from django.utils import timezone
 
-from .models import Account
-from .models import Predstava
-from .models import Calendar
+from .models import Account, Predstava, Calendar, Comment, Like
 
-from .forms import RegisterForm
-from .forms import CalendarWeekForm
+from .forms import RegisterForm, CalendarWeekForm, CommentForm
 
 # Create your views here.
 
@@ -101,10 +98,30 @@ def predstava_detail(request, pk):
     upcoming = (
         Calendar.objects
         .filter(predstava=predstava, is_published=True, date__gte=timezone.localdate())
-        .order_by('date', 'time')[:10]  # limit 10 termina
+        .order_by('date', 'time')[:10] 
     )
 
-    return render(request, 'kazaliste/predstava_detail.html', {'predstava': predstava, 'upcoming': upcoming})
+    comments = predstava.comments.filter(approved=True).order_by('-created_at')
+
+    like_count = predstava.likes.count()
+    user_liked = request.user.is_authenticated and Like.objects.filter(predstava=predstava, user=request.user).exists()
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            Comment.objects.create(
+                predstava=predstava,
+                user=request.user,
+                text=form.cleaned_data['text'],
+                approved=False 
+            )
+            messages.info(request, "Komentar je predan i čeka odobrenje administratora.")
+            return redirect('predstava_detail', pk=predstava.pk)
+    else:
+        form = CommentForm()
+
+    return render(request, 'kazaliste/predstava_detail.html', {'predstava': predstava, 'upcoming': upcoming, 'comments': comments, 
+                                                               'form': form, 'like_count': like_count, 'user_liked': user_liked})
 
 
 def calendar_week(request):
@@ -143,3 +160,18 @@ def calendar_week(request):
         "today": timezone.localdate(),
     }
     return render(request, "kazaliste/calendar_week.html", context)
+
+
+@login_required(login_url='login')
+def like_add(request, pk):
+    p = get_object_or_404(Predstava, pk=pk, is_active=True)
+    Like.objects.get_or_create(predstava=p, user=request.user)
+    messages.success(request, "Liked!")
+    return redirect('predstava_detail', pk=pk)
+
+@login_required(login_url='login')
+def like_remove(request, pk):
+    p = get_object_or_404(Predstava, pk=pk, is_active=True)
+    Like.objects.filter(predstava=p, user=request.user).delete()
+    messages.info(request, "Unliked!")
+    return redirect('predstava_detail', pk=pk)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Account
+from .models import Account, Comment
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -36,5 +36,15 @@ class ProfileForm(forms.ModelForm):
         }    
 
 class CalendarWeekForm(forms.Form):
-    date = forms.DateField(required=False, input_formats=['%Y-%m-%d'])         
+    date = forms.DateField(required=False, input_formats=['%Y-%m-%d'])    
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        labels = {'text': 'Komentar'}
+        widgets = {
+            'text': forms.Textarea(attrs={'cols': 50, 'title': 'Unesite komentar'})
+        }
            

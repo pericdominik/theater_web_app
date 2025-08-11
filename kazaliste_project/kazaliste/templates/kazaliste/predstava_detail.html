@@ -11,18 +11,46 @@
   <p>{{ predstava.description|linebreaks }}</p>
 {% endif %}
 
-<p><a href="{% url 'predstave_list' %}">← Natrag na sve predstave</a></p>
+<p>❤ {{ like_count }}
+{% if request.user.is_authenticated %}
+  {% if user_liked %}
+    <a href="{% url 'predstava_like_remove' predstava.pk %}">Makni lajk</a>
+  {% else %}
+    <a href="{% url 'predstava_like_add' predstava.pk %}">Lajkaj</a>
+  {% endif %}
+{% else %}
+  <small><a href="{% url 'login' %}">Prijavi se</a> za lajkanje</small>
+{% endif %}
+</p>
 
 {% if upcoming %}
   <h3>Nadolazeći termini</h3>
   <ul>
     {% for e in upcoming %}
-      <li>
-        {{ e.date|date:"d.m.Y" }} u {{ e.time|time:"H:i" }}
-        — Dvorana: {{ e.dvorana }}
-      </li>
+      <li>{{ e.date|date:"d.m.Y" }} u {{ e.time|time:"H:i" }} — {{ e.dvorana }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<h3>Komentari</h3>
+{% if comments %}
+  <ul>
+    {% for c in comments %}
+      <li><strong>{{ c.user.username }}</strong> — {{ c.created_at|date:"d.m.Y H:i" }}<br>{{ c.text|linebreaks }}</li>
     {% endfor %}
   </ul>
 {% else %}
-  <p><em>Trenutno nema zakazanih termina za ovu predstavu.</em></p>
+  <p><em>Nema komentara.</em></p>
 {% endif %}
+
+{% if request.user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Pošalji komentar</button>
+  </form>
+{% else %}
+  <p><small><a href="{% url 'login' %}">Prijavi se</a> da bi ostavio komentar.</small></p>
+{% endif %}
+
+<p><a href="{% url 'predstave_list' %}">← Natrag na sve predstave</a></p>

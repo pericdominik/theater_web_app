@@ -4,7 +4,7 @@
     <title>Putujuća lutkarska kazališna družina</title>
 </head>
 <body>
-    <h1>Dobrodošli u putujuću lutkarsku kazališnu družinu</h1>
+    <h1>Putujuća lutkarska kazališna družina</h1>
     
     <nav>
         {% if request.user.is_authenticated %}
@@ -12,6 +12,7 @@
             <a href="{% url 'predstave_list' %}">Predstave</a> |
             <a href="{% url 'profile' %}">Moj profil</a> |
             <a href="{% url 'logout' %}">Odjava</a>
+            <a href="{% url 'calendar_week' %}">Kalendar</a>
         {% else %}
             <a href="{% url 'login' %}">Prijava</a> |
             <a href="{% url 'register' %}">Registracija</a>

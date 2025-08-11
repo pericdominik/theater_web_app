@@ -34,4 +34,7 @@ class ProfileForm(forms.ModelForm):
             'phone': 'Telefon',
             'country': 'Država'
         }    
+
+class CalendarWeekForm(forms.Form):
+    date = forms.DateField(required=False, input_formats=['%Y-%m-%d'])         
            

@@ -1,0 +1,45 @@
+<h2>Tjedni kalendar</h2>
+
+<p>
+  <a href="{% url 'calendar_week' %}?date={{ prev_date|date:'Y-m-d' }}">⟵ Prethodni tjedan</a> |
+  <strong>{{ monday|date:"d.m.Y" }} – {{ sunday|date:"d.m.Y" }}</strong> |
+  <a href="{% url 'calendar_week' %}?date={{ next_date|date:'Y-m-d' }}">Sljedeći tjedan ⟶</a>
+</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      {% for day, items in week %}
+        <th>
+          {{ day|date:"D d.m." }}
+          {% if day == today %}<span style="color:green;">(danas)</span>{% endif %}
+        </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      {% for day, items in week %}
+        <td valign="top">
+          {% if items %}
+            {% for e in items %}
+              <div style="margin-bottom:8px;">
+                <div>
+                  <strong>{{ e.time|time:"H:i" }}</strong> —
+                  <a href="{% url 'predstava_detail' e.predstava.pk %}">{{ e.predstava.title }}</a>
+                </div>
+                <div>Dvorana: {{ e.dvorana }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <em>Nema termina</em>
+          {% endif %}
+        </td>
+      {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<p style="margin-top:12px;">
+  <a href="{% url 'index' %}">Natrag na početnu</a>
+</p>

@@ -12,3 +12,17 @@
 {% endif %}
 
 <p><a href="{% url 'predstave_list' %}">← Natrag na sve predstave</a></p>
+
+{% if upcoming %}
+  <h3>Nadolazeći termini</h3>
+  <ul>
+    {% for e in upcoming %}
+      <li>
+        {{ e.date|date:"d.m.Y" }} u {{ e.time|time:"H:i" }}
+        — Dvorana: {{ e.dvorana }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p><em>Trenutno nema zakazanih termina za ovu predstavu.</em></p>
+{% endif %}

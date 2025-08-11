@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import login
-from .forms import RegisterForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm
+from datetime import timedelta, date as date_cls
+from django.utils import timezone
 
 from .models import Account
 from .models import Predstava
+from .models import Calendar
+
+from .forms import RegisterForm
+from .forms import CalendarWeekForm
 
 # Create your views here.
 
@@ -92,4 +97,49 @@ def predstave_list(request):
 
 def predstava_detail(request, pk):
     predstava = get_object_or_404(Predstava, pk=pk, is_active=True)
-    return render(request, 'kazaliste/predstava_detail.html', {'predstava': predstava})
+
+    upcoming = (
+        Calendar.objects
+        .filter(predstava=predstava, is_published=True, date__gte=timezone.localdate())
+        .order_by('date', 'time')[:10]  # limit 10 termina
+    )
+
+    return render(request, 'kazaliste/predstava_detail.html', {'predstava': predstava, 'upcoming': upcoming})
+
+
+def calendar_week(request):
+    form = CalendarWeekForm(request.GET)
+    if form.is_valid():
+        base = form.cleaned_data.get('date') or timezone.localdate()
+    else:
+        base = timezone.localdate()
+
+    monday = base - timedelta(days=base.weekday())  
+    sunday = monday + timedelta(days=6)
+
+    events = (Calendar.objects
+                .select_related('predstava')
+                .filter(is_published=True, date__range=[monday, sunday])
+                .order_by('date', 'time', 'predstava__title')
+    )
+
+    week_days = []
+    for i in range(7):
+        week_days.append(monday + timedelta(days=i))
+        
+    by_day = {d: [] for d in week_days}
+    for e in events:
+        by_day[e.date].append(e)
+
+    week = [(d, by_day[d]) for d in week_days]
+
+    context = {
+        "week_days": week_days,
+        "week": week,
+        "monday": monday,
+        "sunday": sunday,
+        "prev_date": monday - timedelta(days=7),
+        "next_date": monday + timedelta(days=7),
+        "today": timezone.localdate(),
+    }
+    return render(request, "kazaliste/calendar_week.html", context)

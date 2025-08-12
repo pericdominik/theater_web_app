@@ -19,4 +19,19 @@
   <p>Trenutno nema stavki u cjeniku.</p>
 {% endif %}
 
+<hr style="margin:16px 0;">
+
+<h3>Rezerviraj ulaznice</h3>
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Pošalji rezervaciju</button>
+</form>
+
+{% if messages %}
+  <ul style="color:green; margin-top:12px;">
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}
+
 <p style="margin-top:12px;"><a href="{% url 'index' %}">Natrag na početnu</a></p>

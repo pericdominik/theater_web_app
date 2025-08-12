@@ -1,5 +1,5 @@
 from django import forms
-from .models import Account, Comment
+from .models import Account, Comment, Predstava, Reservation
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -48,3 +48,22 @@ class CommentForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'cols': 50, 'title': 'Unesite komentar'})
         }
            
+
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['name', 'email', 'predstava', 'quantity']
+        labels = {
+            'name': 'Ime i prezime',
+            'email': 'E-mail',
+            'predstava': 'Predstava',
+            'quantity': 'Broj ulaznica',
+        }
+        widgets = {
+            'quantity': forms.NumberInput(attrs={'min': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['predstava'].queryset = Predstava.objects.filter(is_active=True).order_by('title')

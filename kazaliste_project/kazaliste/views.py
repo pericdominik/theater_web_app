@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from .models import Account, Predstava, Calendar, Comment, Like, PriceItem
 
-from .forms import RegisterForm, CalendarWeekForm, CommentForm
+from .forms import RegisterForm, CalendarWeekForm, CommentForm, ReservationForm
 
 # Create your views here.
 
@@ -179,4 +179,14 @@ def like_remove(request, pk):
 
 def cjenik(request):
     items = PriceItem.objects.filter(is_active=True).order_by('display_order', 'name')
-    return render(request, 'kazaliste/cjenik.html', {'items': items})
+
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Rezervacija je primljena.")
+            return redirect('cjenik')
+    else:
+        form = ReservationForm()
+
+    return render(request, 'kazaliste/cjenik.html', {'items': items, 'form': form})

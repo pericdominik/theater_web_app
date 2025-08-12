@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Predstava, Calendar, Comment, Like
+from .models import Predstava, Calendar, Comment, Like, PriceItem
 
 # Register your models here.
 
@@ -33,3 +33,11 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Like)  
+
+
+@admin.register(PriceItem)
+class PriceItemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'is_active', 'display_order')
+    list_editable = ('price', 'is_active', 'display_order')
+    search_fields = ('name', 'description')
+

@@ -69,3 +69,18 @@ class Like(models.Model):
 
     def __str__(self):
         return f"Like od {self.user.username} - {self.predstava.title}"
+
+
+
+class PriceItem(models.Model):
+    name = models.CharField(max_length=80)                  
+    price = models.DecimalField(max_digits=4, decimal_places=2)  
+    description = models.CharField(max_length=200, blank=True)
+    is_active = models.BooleanField(default=True)
+    display_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['display_order', 'name']
+
+    def __str__(self):
+        return f"{self.name} ({self.price} €)"

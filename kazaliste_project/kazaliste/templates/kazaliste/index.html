@@ -7,18 +7,19 @@
     <h1>Putujuća lutkarska kazališna družina</h1>
     
     <nav>
+        <a href="{% url 'predstave_list' %}">Predstave</a> |
+        <a href="{% url 'calendar_week' %}">Kalendar</a> |
+        <a href="{% url 'cjenik' %}">Cjenik</a> |
+
         {% if request.user.is_authenticated %}
             Pozdrav, {{ request.user.first_name|default:request.user.username }} |
-            <a href="{% url 'predstave_list' %}">Predstave</a> |
             <a href="{% url 'profile' %}">Moj profil</a> |
-            <a href="{% url 'logout' %}">Odjava</a>
-            <a href="{% url 'calendar_week' %}">Kalendar</a>
-        {% else %}
+            <a href="{% url 'logout' %}">Odjava</a> |
+         {% else %}
             <a href="{% url 'login' %}">Prijava</a> |
             <a href="{% url 'register' %}">Registracija</a>
         {% endif %}
     </nav>
-    
     <hr>
     
     <p>Teks....</p>

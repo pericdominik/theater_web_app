@@ -1,0 +1,22 @@
+<h2>Cjenik ulaznica</h2>
+
+{% if items %}
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr><th>Vrsta</th><th>Cijena</th><th>Opis</th></tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+        <tr>
+          <td>{{ it.name }}</td>
+          <td>{{ it.price }} €</td>
+          <td>{{ it.description }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Trenutno nema stavki u cjeniku.</p>
+{% endif %}
+
+<p style="margin-top:12px;"><a href="{% url 'index' %}">Natrag na početnu</a></p>

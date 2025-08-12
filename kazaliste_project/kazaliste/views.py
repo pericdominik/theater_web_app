@@ -8,7 +8,7 @@ from .forms import ProfileForm
 from datetime import timedelta, date as date_cls
 from django.utils import timezone
 
-from .models import Account, Predstava, Calendar, Comment, Like
+from .models import Account, Predstava, Calendar, Comment, Like, PriceItem
 
 from .forms import RegisterForm, CalendarWeekForm, CommentForm
 
@@ -173,5 +173,10 @@ def like_add(request, pk):
 def like_remove(request, pk):
     p = get_object_or_404(Predstava, pk=pk, is_active=True)
     Like.objects.filter(predstava=p, user=request.user).delete()
-    messages.info(request, "Unliked!")
+    messages.success(request, "Unliked!")
     return redirect('predstava_detail', pk=pk)
+
+
+def cjenik(request):
+    items = PriceItem.objects.filter(is_active=True).order_by('display_order', 'name')
+    return render(request, 'kazaliste/cjenik.html', {'items': items})

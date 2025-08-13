@@ -8,7 +8,7 @@ from .forms import ProfileForm
 from datetime import timedelta, date as date_cls
 from django.utils import timezone
 
-from .models import Account, Predstava, Calendar, Comment, Like, PriceItem
+from .models import Account, Predstava, Calendar, Comment, Like, PriceItem, Reservation
 
 from .forms import RegisterForm, CalendarWeekForm, CommentForm, ReservationForm
 
@@ -76,6 +76,25 @@ def edit_profile(request):
     account, _ = Account.objects.get_or_create(user=request.user)
     edit = (request.GET.get('edit') == '1')
 
+    user_comments = (
+        Comment.objects
+        .filter(user=request.user)
+        .select_related('predstava')
+        .order_by('-created_at')
+    )
+    user_likes = (
+        Like.objects
+        .filter(user=request.user)
+        .select_related('predstava')
+        .order_by('predstava__title')
+    )
+    user_reservations = (
+        Reservation.objects
+        .filter(email=request.user.email)
+        .select_related('predstava')
+        .order_by('-created_at')
+    ) if request.user.email else []
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=account)
         if form.is_valid():
@@ -85,7 +104,8 @@ def edit_profile(request):
     else:
         form = ProfileForm(instance=account)
 
-    return render(request, 'kazaliste/profile.html', {'form': form, 'user_obj': request.user, 'account': account, 'edit': edit})
+    return render(request, 'kazaliste/profile.html', {'form': form, 'user_obj': request.user, 'account': account, 'edit': edit,
+                                                      'comments': user_comments, 'likes': user_likes, 'reservations': user_reservations})
 
 
 def predstave_list(request):
@@ -184,7 +204,7 @@ def cjenik(request):
         form = ReservationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Rezervacija je primljena.")
+            messages.success(request, "Rezervacija je zaprimljena.")
             return redirect('cjenik')
     else:
         form = ReservationForm()

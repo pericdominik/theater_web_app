@@ -14,12 +14,66 @@
     <p><strong>Država:</strong> {{ account.country|default:"—" }}</p>
   </div>
 
-  <p style="margin-top:12px;">
-    <a href="{% url 'profile' %}?edit=1">Uredi</a> ·
-    <a href="{% url 'index' %}">Natrag na početnu</a>
-  </p>
-{% endif %}
+  <hr>
 
+  <h3>Moji komentari</h3>
+  {% if comments %}
+    <ul>
+      {% for c in comments %}
+        <li style="margin-bottom:8px;">
+          <a href="{% url 'predstava_detail' c.predstava.pk %}">{{ c.predstava.title }}</a>
+          — {{ c.created_at|date:"d.m.Y H:i" }}
+          {% if c.approved %}
+            <span style="color:green;">(odobren)</span>
+          {% else %}
+            <span style="color:#b97;">(čeka odobrenje)</span>
+          {% endif %}
+          <br>{{ c.text|linebreaks }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p><em>Još nemaš komentara.</em></p>
+  {% endif %}
+
+  <hr>
+
+  <h3>Moje lajkane predstave</h3>
+  {% if likes %}
+    <ul>
+      {% for l in likes %}
+        <li><a href="{% url 'predstava_detail' l.predstava.pk %}">{{ l.predstava.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p><em>Nemaš lajkane predstave.</em></p>
+  {% endif %}
+
+<hr>
+
+  <h3>Moje rezervacije</h3>
+  {% if reservations %}
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr><th>Predstava</th><th>Količina</th><th>Status</th><th>Kreirano</th></tr>
+      </thead>
+      <tbody>
+        {% for r in reservations %}
+          <tr>
+            <td><a href="{% url 'predstava_detail' r.predstava.pk %}">{{ r.predstava.title }}</a></td>
+            <td>{{ r.quantity }}</td>
+            <td>{% if r.status == 'new' %}Nova{% elif r.status == 'closed' %}Zatvorena{% else %}{{ r.status }}{% endif %}</td>
+            <td>{{ r.created_at|date:"d.m.Y H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p><em>Nema rezervacija vezanih uz tvoj e‑mail.</em></p>
+  {% endif %}
+  
+{% endif %}
+  
 {% if edit %}
   <form method="POST" action="{% url 'profile' %}?edit=1" style="border:1px solid #ddd; padding:12px; border-radius:8px;">
     {% csrf_token %}
@@ -34,3 +88,8 @@
     {% for m in messages %}<li>{{ m }}</li>{% endfor %}
   </ul>
 {% endif %}
+
+<p style="margin-top:12px;">
+    <a href="{% url 'profile' %}?edit=1">Uredi</a> ·
+    <a href="{% url 'index' %}">Natrag na početnu</a>
+  </p>

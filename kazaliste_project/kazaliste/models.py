@@ -88,7 +88,6 @@ class PriceItem(models.Model):
 class Reservation(models.Model):
     STATUS_CHOICES = [
         ('new', 'Nova rezervacija'),
-        ('contacted', 'Kontaktirana osoba'),
         ('closed', 'Zatvorena rezervacija'),
     ]
 

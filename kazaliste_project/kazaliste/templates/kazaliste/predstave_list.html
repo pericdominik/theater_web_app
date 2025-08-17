@@ -1,14 +1,28 @@
-<h2>Predstave</h2>
+{% extends 'kazaliste/base.html' %}
 
-<ul>
+{% block title %}Popis predstava{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Popis predstava</h2>
+
+<div class="row">
   {% for p in predstave %}
-    <li>
-      <a href="{% url 'predstava_detail' p.pk %}">{{ p.title }}</a>
-      — {{ p.duration_minutes }} min, {{ p.age_min }}+
-    </li>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100" style="width: 18rem;">
+          <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.title }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ p.title }}</h5>
+          <p class="card-text">
+            Trajanje: {{ p.duration_minutes }} min <br>
+            Dobna preporuka: {{ p.age_min }}+
+          </p>
+          <a href="{% url 'predstava_detail' p.pk %}" class="btn btn-primary">Detalji</a>
+        </div>
+      </div>
+    </div>
   {% empty %}
-    <li>Trenutno nema aktivnih predstava.</li>
+    <p>Trenutno nema aktivnih predstava.</p>
   {% endfor %}
-</ul>
+</div>
 
-<p><a href="{% url 'index' %}">Natrag na početnu</a></p>
+{% endblock %}

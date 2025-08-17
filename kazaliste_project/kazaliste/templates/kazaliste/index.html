@@ -1,27 +1,8 @@
-<!DOCTYPE html>
-<html>  
-<head>
-    <title>Putujuća lutkarska kazališna družina</title>
-</head>
-<body>
-    <h1>Putujuća lutkarska kazališna družina</h1>
-    
-    <nav>
-        <a href="{% url 'predstave_list' %}">Predstave</a> |
-        <a href="{% url 'calendar_week' %}">Kalendar</a> |
-        <a href="{% url 'cjenik' %}">Cjenik</a> |
+{% extends "kazaliste/base.html" %}
 
-        {% if request.user.is_authenticated %}
-            Pozdrav, {{ request.user.first_name|default:request.user.username }} |
-            <a href="{% url 'profile' %}">Moj profil</a> |
-            <a href="{% url 'logout' %}">Odjava</a> |
-         {% else %}
-            <a href="{% url 'login' %}">Prijava</a> |
-            <a href="{% url 'register' %}">Registracija</a>
-        {% endif %}
-    </nav>
-    <hr>
-    
-    <p>Teks....</p>
-</body>
-</html>
+{% block title %}Putujuća lutkarska kazališna družina{% endblock %}
+
+{% block content %}
+    <h1>Dobrodošli!</h1>
+    <p>Ovo je početna stranica naše družine.</p>
+{% endblock %}

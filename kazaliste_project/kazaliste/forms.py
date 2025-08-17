@@ -45,7 +45,7 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
         labels = {'text': 'Komentar'}
         widgets = {
-            'text': forms.Textarea(attrs={'cols': 50, 'title': 'Unesite komentar'})
+            'text': forms.TextInput(attrs={'cols': 50, 'title': 'Unesite komentar'})
         }
            
 

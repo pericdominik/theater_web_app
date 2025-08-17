@@ -1,59 +1,116 @@
+{% extends "kazaliste/base.html" %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<h2>{{ predstava.title }}</h2>
+{% block title %}{{ predstava.title }}{% endblock %}
 
-{% if predstava.image %}
-  <img src="{{ predstava.image.url }}" alt="{{ predstava.title }}" style="max-width:240px;">
-{% endif %}
+{% block content %}
+<div class="row g-4">
 
-<p><strong>Trajanje:</strong> {{ predstava.duration_minutes }} min</p>
-<p><strong>Preporučena dob:</strong> {{ predstava.age_min }}+</p>
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+        <img src="{{ predstava.image.url }}" class="card-img-top" alt="{{ predstava.title }}">
 
-{% if predstava.description %}
-  <p>{{ predstava.description|linebreaks }}</p>
-{% endif %}
+      <div class="card-body">
+        <h5 class="card-title mb-2">{{ predstava.title }}</h5>
 
-<p>❤ {{ like_count }}
-{% if request.user.is_authenticated %}
-  {% if user_liked %}
-    <a href="{% url 'predstava_like_remove' predstava.pk %}">Makni lajk</a>
-  {% else %}
-    <a href="{% url 'predstava_like_add' predstava.pk %}">Lajkaj</a>
-  {% endif %}
-{% else %}
-  <small><a href="{% url 'login' %}">Prijavi se</a> za lajkanje</small>
-{% endif %}
-</p>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="badge text-bg-secondary">Trajanje: {{ predstava.duration_minutes }} min</span>
+          <span class="badge text-bg-info">Dob: {{ predstava.age_min }}+</span>
+          {% if not predstava.is_active %}
+            <span class="badge text-bg-warning">Neaktivno</span>
+          {% endif %}
+        </div>
 
-{% if upcoming %}
-  <h3>Nadolazeći termini</h3>
-  <ul>
-    {% for e in upcoming %}
-      <li>{{ e.date|date:"d.m.Y" }} u {{ e.time|time:"H:i" }} — {{ e.dvorana }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-muted">❤️ {{ like_count|default:0 }}</span>
 
-<h3>Komentari</h3>
-{% if comments %}
-  <ul>
-    {% for c in comments %}
-      <li><strong>{{ c.user.username }}</strong> — {{ c.created_at|date:"d.m.Y H:i" }}<br>{{ c.text|linebreaks }}</li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p><em>Nema komentara.</em></p>
-{% endif %}
+          {% if user.is_authenticated %}
+            {% if user_liked %}
+              <a class="btn btn-outline-danger btn-sm" href="{% url 'predstava_like_remove' predstava.pk %}">Ukloni lajk</a>
+            {% else %}
+              <a class="btn btn-outline-primary btn-sm" href="{% url 'predstava_like_add' predstava.pk %}">Lajkaj</a>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'login' %}"> Prijavi se za lajk</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
-{% if request.user.is_authenticated %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Pošalji komentar</button>
-  </form>
-{% else %}
-  <p><small><a href="{% url 'login' %}">Prijavi se</a> da bi ostavio komentar.</small></p>
-{% endif %}
+  <div class="col-md-7">
 
-<p><a href="{% url 'predstave_list' %}">← Natrag na sve predstave</a></p>
+    <div class="card shadow-sm mb-4">
+      <div class="card-header"><strong>Opis predstave</strong></div>
+      <div class="card-body">
+        <p class="mb-0">{{ predstava.description|linebreaks|default:"Nema opisa." }}</p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header"><strong>Nadolazeći termini</strong></div>
+      <div class="card-body p-0">
+        {% if upcoming %}
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th style="width:40%;">Datum</th>
+                <th style="width:30%;">Vrijeme</th>
+                <th>Dvorana</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in upcoming %}
+                <tr>
+                  <td>{{ t.date|date:"d.m.Y." }}</td>
+                  <td>{{ t.time|time:"H:i" }}</td>
+                  <td>{{ t.dvorana }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="p-3"><em>Trenutno nema najavljenih termina.</em></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header"><strong>Komentari</strong></div>
+      <div class="card-body">
+        {% if comments %}
+          <ul class="list-group list-group-flush mb-3">
+            {% for c in comments %}
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                  <strong>{{ c.user.get_full_name|default:c.user.username }}</strong>
+                  <small class="text-muted">{{ c.created_at|date:"d.m.Y. H:i" }}</small>
+                </div>
+                <div>{{ c.text|linebreaks }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Nema komentara.</p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+          <form method="post" class="mt-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary btn-sm">Pošalji komentar</button>
+          </form>
+        {% else %}
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'login' %}">
+            Prijavi se za ostavljanje komentara
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="text-end mt-4">
+        <a href="{% url 'predstave_list' %}" class="btn btn-secondary">Natrag na popis predstava</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -15,7 +15,8 @@ from .forms import RegisterForm, CalendarWeekForm, CommentForm, ReservationForm
 # Create your views here.
 
 def index(request):
-    return render(request, 'kazaliste/index.html')
+    predstave = Predstava.objects.order_by('-created_at')[:3]
+    return render(request, 'kazaliste/index.html', {"predstave": predstave})
 
 def register(request):
     if request.method == 'POST':

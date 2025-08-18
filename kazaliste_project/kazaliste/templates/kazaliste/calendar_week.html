@@ -1,45 +1,78 @@
-<h2>Tjedni kalendar</h2>
+{% extends "kazaliste/base.html" %}
+{% load static %}
 
-<p>
-  <a href="{% url 'calendar_week' %}?date={{ prev_date|date:'Y-m-d' }}">⟵ Prethodni tjedan</a> |
-  <strong>{{ monday|date:"d.m.Y" }} – {{ sunday|date:"d.m.Y" }}</strong> |
-  <a href="{% url 'calendar_week' %}?date={{ next_date|date:'Y-m-d' }}">Sljedeći tjedan ⟶</a>
-</p>
+{% block title %}Tjedni kalendar{% endblock %}
 
-<table border="1" cellpadding="6" cellspacing="0">
-  <thead>
-    <tr>
-      {% for day, items in week %}
-        <th>
-          {{ day|date:"D d.m." }}
-          {% if day == today %}<span style="color:green;">(danas)</span>{% endif %}
-        </th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      {% for day, items in week %}
-        <td valign="top">
-          {% if items %}
-            {% for e in items %}
-              <div style="margin-bottom:8px;">
-                <div>
-                  <strong>{{ e.time|time:"H:i" }}</strong> —
-                  <a href="{% url 'predstava_detail' e.predstava.pk %}">{{ e.predstava.title }}</a>
-                </div>
-                <div>Dvorana: {{ e.dvorana }}</div>
+{% block content %}
+<h2 class="mb-3">Tjedni kalendar</h2>
+
+<div class="d-flex align-items-center gap-2 mb-3">
+  <div class="btn-group">
+    <a class="btn btn-outline-secondary" href="{% url 'calendar_week' %}?date={{ prev_date|date:'Y-m-d' }}">Prethodni tjedan</a>
+    <a class="btn btn-outline-secondary" href="{% url 'calendar_week' %}?date={{ next_date|date:'Y-m-d' }}">Sljedeći tjedan</a>
+  </div>
+  <div class="ms-2">
+    <strong>{{ monday|date:"d.m.Y" }} - {{ sunday|date:"d.m.Y" }}</strong>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-sm align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        {% for day, items in week %}
+          <th class="text-center {% if day == today %}table-primary{% endif %}">
+            <div class="fw-semibold">
+              {{ day|date:"D" }}
+              {% if day == today %}<span class="badge text-bg-primary ms-1">danas</span>{% endif %}
+            </div>
+            <small class="text-muted">{{ day|date:"d.m." }}</small>
+          </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for day, items in week %}
+          <td class="align-top" style="min-width: 180px;">
+            {% if items %}
+              <div class="list-group list-group-flush">
+                {% for e in items %}
+                  <div class="list-group-item py-2">
+                    <span class="badge text-bg-primary me-1">{{ e.time|time:"H:i" }}</span>
+                    <a href="{% url 'predstava_detail' e.predstava.pk %}"><strong>{{ e.predstava.title }}</strong></a>
+                    <div class="text-muted small">Dvorana: {{ e.dvorana }}</div>
+                  </div>
+                {% endfor %}
               </div>
-            {% endfor %}
-          {% else %}
-            <em>Nema termina</em>
-          {% endif %}
-        </td>
-      {% endfor %}
-    </tr>
-  </tbody>
-</table>
+            {% else %}
+              <span class="text-muted"><em>Nema termina</em></span>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-<p style="margin-top:12px;">
-  <a href="{% url 'index' %}">Natrag na početnu</a>
-</p>
+<div class="mt-4">
+  <h4 class="mb-3">Dostupne predstave za {{ today|date:"Y" }}</h4>
+
+  <div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <img src="{% static 'images/macak_u_cizmama2.png' %}" class="img-fluid rounded shadow-sm" alt="Macak">
+  </div>
+  <div class="col-md-4">
+    <img src="{% static 'images/Crvenkapica.jpeg' %}" class="img-fluid rounded shadow-sm" alt="Crvenkapica">
+  </div>
+  <div class="col-md-4">
+    <img src="{% static 'images/Petar_Pan2.png' %}" class="img-fluid rounded shadow-sm" alt="Petar pan">
+  </div>
+</div>
+  
+  <div class="text-center">
+    <a href="{% url 'predstave_list' %}" class="btn btn-primary">Pogledaj sve predstave</a>
+  </div>
+</div>
+
+{% endblock %}

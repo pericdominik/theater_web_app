@@ -1,3 +1,20 @@
 .object-fit-cover { object-fit: cover; height: 320px; }
 
 h2 { letter-spacing: .3px; }
+
+.hero {
+  height: 100vh; /* cijeli ekran */
+  background: url("/static/images/kazaliste_index.jpeg") no-repeat center center;
+  background-size: cover; /* rastegne sliku */
+  display: flex;
+  justify-content: center; /* centriraj horizontalno */
+  align-items: center;     /* centriraj vertikalno */
+}
+
+.hero-text {
+  color: white;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5); /* poluprozirna pozadina da se istakne tekst */
+  padding: 20px;
+  border-radius: 10px;
+}

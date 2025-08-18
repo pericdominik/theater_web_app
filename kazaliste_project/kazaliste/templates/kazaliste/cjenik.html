@@ -8,12 +8,9 @@
   <p class="text-muted mb-1">Cjenik za putujuću lutkarsku kazališnu družinu</p>
   <h1 class="display-5 fw-semibold mb-3">Cjenik</h1>
 
-  <img src="{% static 'images/dvorana_lutaka.jpeg' %}"
-    alt="Kazališna dvorana"
-    class="img-fluid w-100 rounded"
-    style="max-height: 380px; object-fit: cover;"
-  >
+  <img src="{% static 'images/dvorana_lutaka.jpeg' %}" alt="Kazališna dvorana" class="img-fluid w-100 rounded" style="max-height: 380px; object-fit: cover;">
 </section>
+
 <div class="row g-4">
 
   <div class="col-md-7">
@@ -43,6 +40,8 @@
     {% else %}
       <p class="text-muted">Trenutno nema stavki u cjeniku.</p>
     {% endif %}
+
+    <p>Ulaznice i svi paketi ulaznica mogu se kupiti na blagajni kazališta svakim radnim danom od 9 do 13 sati, te prije početka predstave.</p>
   </div>
 
   <div class="col-md-5">

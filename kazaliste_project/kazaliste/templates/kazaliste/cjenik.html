@@ -1,37 +1,86 @@
-<h2>Cjenik ulaznica</h2>
+{% extends "kazaliste/base.html" %}
+{% load static %}
 
-{% if items %}
-  <table border="1" cellpadding="6" cellspacing="0">
-    <thead>
-      <tr><th>Vrsta</th><th>Cijena</th><th>Opis</th></tr>
-    </thead>
-    <tbody>
-      {% for it in items %}
-        <tr>
-          <td>{{ it.name }}</td>
-          <td>{{ it.price }} €</td>
-          <td>{{ it.description }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p>Trenutno nema stavki u cjeniku.</p>
-{% endif %}
+{% block title %}Cjenik{% endblock %}
 
-<hr style="margin:16px 0;">
+{% block content %}
+<section class="text-center py-4">
+  <p class="text-muted mb-1">Cjenik za putujuću lutkarsku kazališnu družinu</p>
+  <h1 class="display-5 fw-semibold mb-3">Cjenik</h1>
 
-<h3>Rezerviraj ulaznice</h3>
-<form method="post" novalidate>
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Pošalji rezervaciju</button>
-</form>
+  <img src="{% static 'images/dvorana_lutaka.jpeg' %}"
+    alt="Kazališna dvorana"
+    class="img-fluid w-100 rounded"
+    style="max-height: 380px; object-fit: cover;"
+  >
+</section>
+<div class="row g-4">
 
-{% if messages %}
-  <ul style="color:green; margin-top:12px;">
-    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-  </ul>
-{% endif %}
+  <div class="col-md-7">
+    <h2 class="mb-3">Cjenik ulaznica</h2>
 
-<p style="margin-top:12px;"><a href="{% url 'index' %}">Natrag na početnu</a></p>
+    {% if items %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Vrsta</th>
+              <th scope="col">Cijena</th>
+              <th scope="col">Opis</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for it in items %}
+              <tr>
+                <td>{{ it.name }}</td>
+                <td>{{ it.price }} €</td>
+                <td class="text-muted">{{ it.description|default:"—" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted">Trenutno nema stavki u cjeniku.</p>
+    {% endif %}
+  </div>
+
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <strong>Rezerviraj ulaznice</strong>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary w-100">Pošalji rezervaciju</button>
+        </form>
+      </div>
+    </div>
+
+    {% if messages %}
+      <div class="mt-3">
+        {% for m in messages %}
+          <div class="alert alert-{{ m.tags|default:'success' }} alert-dismissible" role="alert">
+            {{ m }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

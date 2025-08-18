@@ -1,22 +1,43 @@
-<h2>Prijava</h2>
+{% extends "kazaliste/base.html" %}
 
-<form method="POST">
-  {% csrf_token %}
-  <p>
-    <label for="id_email">E-mail</label><br>
-    <input type="email" id="id_email" name="email" required>
-  </p>
-  <p>
-    <label for="id_password">Lozinka</label><br>
-    <input type="password" id="id_password" name="password" required>
-  </p>
-  <button type="submit">Prijavi se</button>
-</form>
+{% block title %}Prijava{% endblock %}
 
-{% if messages %}
-  <ul style="color:crimson;">
-    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-  </ul>
-{% endif %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="mb-4 text-center">Prijava</h2>
+          <form method="post">
+            {% csrf_token %}
 
-<p>Nemaš račun? <a href="{% url 'register' %}">Registriraj se</a></p>
+            <div class="mb-3">
+              <label for="id_email" class="form-label">E-mail</label>
+              <input type="email" name="email" id="id_email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_password" class="form-label">Lozinka</label>
+              <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+
+            {% if messages %}
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  {% for m in messages %}
+                    <li>{{ m }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary w-100 mb-2">Prijavi se</button>
+          </form>
+          <p class="text-center mt-3"> <a href="{% url 'register' %}">Nemaš račun? Registracija</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

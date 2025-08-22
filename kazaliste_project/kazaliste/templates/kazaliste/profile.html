@@ -45,53 +45,9 @@
     </div>
   </div>
 
-  <div class="row g-4">
-    <div class="col-md-6">
-
-      <div class="card shadow-sm mb-4">
-        <div class="card-header"><strong>Moji komentari</strong></div>
-        <div class="card-body">
-          {% if comments %}
-            <ul class="list-group list-group-flush">
-              {% for c in comments %}
-                <li class="list-group-item">
-                  <a href="{% url 'predstava_detail' c.predstava.pk %}">{{ c.predstava.title }}</a>
-                  — {{ c.created_at|date:"d.m.Y H:i" }}
-                  {% if c.approved %}
-                    <span class="badge bg-success">Odobren</span>
-                  {% else %}
-                    <span class="badge bg-warning text-dark">Čeka odobrenje</span>
-                  {% endif %}
-                  <div>{{ c.text|linebreaks }}</div>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="text-muted mb-0"><em>Još nemaš komentara.</em></p>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="card shadow-sm">
-        <div class="card-header"><strong>Moje lajkane predstave</strong></div>
-        <div class="card-body">
-          {% if likes %}
-            <ul class="list-group list-group-flush">
-              {% for l in likes %}
-                <li class="list-group-item">
-                  <a href="{% url 'predstava_detail' l.predstava.pk %}">{{ l.predstava.title }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="text-muted mb-0"><em>Nemaš lajkane predstave.</em></p>
-          {% endif %}
-        </div>
-      </div>
-
-    </div>
-
-    <div class="col-md-6">
+  
+  <div class="row g-4 mb-4">
+    <div class="col-12">
       <div class="card shadow-sm">
         <div class="card-header"><strong>Moje rezervacije</strong></div>
         <div class="card-body p-0">
@@ -126,6 +82,53 @@
             </table>
           {% else %}
             <p class="text-muted m-3"><em>Nema rezervacija vezanih uz tvoj e-mail.</em></p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header"><strong>Moji komentari</strong></div>
+        <div class="card-body">
+          {% if comments %}
+            <ul class="list-group list-group-flush">
+              {% for c in comments %}
+                <li class="list-group-item">
+                  <a href="{% url 'predstava_detail' c.predstava.pk %}">{{ c.predstava.title }}</a>
+                  — {{ c.created_at|date:"d.m.Y H:i" }}
+                  {% if c.approved %}
+                    <span class="badge bg-success">Odobren</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">Čeka odobrenje</span>
+                  {% endif %}
+                  <div>{{ c.text|linebreaks }}</div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0"><em>Još nemaš komentara.</em></p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header"><strong>Moje lajkane predstave</strong></div>
+        <div class="card-body">
+          {% if likes %}
+            <ul class="list-group list-group-flush">
+              {% for l in likes %}
+                <li class="list-group-item">
+                  <a href="{% url 'predstava_detail' l.predstava.pk %}">{{ l.predstava.title }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0"><em>Nemaš lajkane predstave.</em></p>
           {% endif %}
         </div>
       </div>

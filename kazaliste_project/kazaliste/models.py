@@ -87,7 +87,7 @@ class PriceItem(models.Model):
     
 class Reservation(models.Model):
     STATUS_CHOICES = [
-        ('new', 'Nova rezervacija'),
+        ('poslana', 'Rezervacija poslana'),
         ('closed', 'Zatvorena rezervacija'),
     ]
 
@@ -95,7 +95,7 @@ class Reservation(models.Model):
     name = models.CharField(max_length=120)
     email = models.EmailField()
     quantity = models.PositiveIntegerField(default=1)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='poslana')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

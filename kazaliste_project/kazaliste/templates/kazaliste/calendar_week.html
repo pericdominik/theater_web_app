@@ -56,20 +56,20 @@
 </div>
 
 <div class="mt-4">
-  <h4 class="mb-3">Dostupne predstave za {{ today|date:"Y" }}</h4>
+  <h4 class="mb-3">Preporučene predstave za {{ today|date:"Y" }}. godinu.</h4>
 
   <div class="row g-3 mb-3">
   <div class="col-md-4">
-    <img src="{% static 'images/macak_u_cizmama2.png' %}" class="img-fluid rounded shadow-sm" alt="Macak">
+    <a href="{% url 'predstava_detail' 2 %}"><img src="{% static 'images/macak_u_cizmama2.png' %}" class="img-fluid rounded shadow-sm" alt="Macak"></a>  
   </div>
   <div class="col-md-4">
-    <img src="{% static 'images/Crvenkapica.jpeg' %}" class="img-fluid rounded shadow-sm" alt="Crvenkapica">
+     <a href="{% url 'predstava_detail' 9 %}"><img src="{% static 'images/snjeguljica.jpeg' %}" class="img-fluid rounded shadow-sm" alt="Crvenkapica"></a>
   </div>
   <div class="col-md-4">
-    <img src="{% static 'images/Petar_Pan2.png' %}" class="img-fluid rounded shadow-sm" alt="Petar pan">
+    <a href="{% url 'predstava_detail' 3 %}"><img src="{% static 'images/Petar_Pan2.png' %}" class="img-fluid rounded shadow-sm" alt="Petar pan"></a>
   </div>
 </div>
-  
+
   <div class="text-center">
     <a href="{% url 'predstave_list' %}" class="btn btn-primary">Pogledaj sve predstave</a>
   </div>

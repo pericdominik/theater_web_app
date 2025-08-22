@@ -51,6 +51,13 @@ class CommentForm(forms.ModelForm):
 
 
 class ReservationForm(forms.ModelForm):
+    quantity = forms.IntegerField(
+        label="Broj ulaznica",
+        min_value=1,
+        initial=1,
+        widget=forms.NumberInput(attrs={'min': 1, 'step': 1})
+    )
+
     class Meta:
         model = Reservation
         fields = ['name', 'email', 'predstava', 'quantity']
@@ -59,9 +66,6 @@ class ReservationForm(forms.ModelForm):
             'email': 'E-mail',
             'predstava': 'Predstava',
             'quantity': 'Broj ulaznica',
-        }
-        widgets = {
-            'quantity': forms.NumberInput(attrs={'min': 1}),
         }
 
     def __init__(self, *args, **kwargs):

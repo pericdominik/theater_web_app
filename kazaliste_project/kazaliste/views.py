@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from .forms import ProfileForm
 from datetime import timedelta, date as date_cls
 from django.utils import timezone
@@ -200,14 +201,16 @@ def like_remove(request, pk):
 
 def cjenik(request):
     items = PriceItem.objects.filter(is_active=True).order_by('display_order', 'name')
-
-    if request.method == 'POST':
-        form = ReservationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Rezervacija je zaprimljena.")
-            return redirect('cjenik')
-    else:
-        form = ReservationForm()
-
+    form = ReservationForm()
     return render(request, 'kazaliste/cjenik.html', {'items': items, 'form': form})
+
+@login_required(login_url='login')
+@require_POST
+def create_reservation(request):
+    form = ReservationForm(request.POST)
+    if form.is_valid():
+        form.save() 
+        messages.success(request, "Rezervacija je zaprimljena.")
+    else:
+        messages.error(request, "Provjerite polja u obrascu.")
+    return redirect('cjenik')

@@ -30,7 +30,7 @@
             {% for it in items %}
               <tr>
                 <td>{{ it.name }}</td>
-                <td>{{ it.price }} €</td>
+                <td style="width: 10%;">{{ it.price }} €</td>
                 <td class="text-muted">{{ it.description|default:"—" }}</td>
               </tr>
             {% endfor %}
@@ -41,16 +41,17 @@
       <p class="text-muted">Trenutno nema stavki u cjeniku.</p>
     {% endif %}
 
-    <p>Ulaznice i svi paketi ulaznica mogu se kupiti na blagajni kazališta svakim radnim danom od 9 do 13 sati, te prije početka predstave.</p>
   </div>
 
   <div class="col-md-5">
+    <p>Ulaznice i svi paketi ulaznica mogu se kupiti na blagajni kazališta svakim radnim danom od 8 do 14 sati, te 1h prije početka predstave. Ulaznice možete rezervirati preko dolje ponuđe forme.</p>
     <div class="card shadow-sm">
       <div class="card-header">
         <strong>Rezerviraj ulaznice</strong>
       </div>
       <div class="card-body">
-        <form method="post">
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'create_reservation' %}">
           {% csrf_token %}
 
           {% for field in form %}
@@ -66,6 +67,14 @@
 
           <button type="submit" class="btn btn-primary w-100">Pošalji rezervaciju</button>
         </form>
+
+        {% else %}
+          <div class="mb-3"><p>Za slanje rezervacije potrebno je biti prijavljen.</p></div>
+          <div class="d-grid gap-2">
+            <a class="btn btn-primary" href="{% url 'login' %}?next={{ request.path }}">Prijava</a>
+            <a class="btn btn-outline-secondary" href="{% url 'register' %}?next={{ request.path }}">Registracija</a>
+           </div>
+        {% endif %}
       </div>
     </div>
 
